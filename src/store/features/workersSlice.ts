@@ -57,7 +57,13 @@ const workersSlice = createSlice({
       })
       .addCase(fetchWorkers.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.workers = action.payload;
+        const newWorkers = action.payload.filter(
+          (newWorker) =>
+            !state.workers.some(
+              (existingWorker) => existingWorker.id === newWorker.id
+            )
+        );
+        state.workers = [...state.workers, ...newWorkers];
       })
       .addCase(fetchWorkers.rejected, (state, action) => {
         state.status = "failed";
