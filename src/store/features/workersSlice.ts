@@ -4,6 +4,7 @@ import { Worker } from "../../types/worker";
 interface WorkersState {
   workers: Worker[];
   filteredWorkers: Worker[];
+  selectedWorker: Worker | null;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
@@ -11,6 +12,7 @@ interface WorkersState {
 const initialState: WorkersState = {
   workers: [],
   filteredWorkers: [],
+  selectedWorker: null,
   status: "idle",
   error: null,
 };
@@ -45,6 +47,38 @@ export const fetchWorkers = createAsyncThunk(
     );
 
     return workers as Worker[];
+  }
+);
+
+export const fetchWorkerById = createAsyncThunk(
+  "workers/fetchWorkerById",
+  async (id: string) => {
+    const localStorageKey = `worker_${id}`;
+    const storedItem = localStorage.getItem(localStorageKey);
+
+    if (storedItem) {
+      const { worker, timestamp }: { worker: Worker; timestamp: number } =
+        JSON.parse(storedItem);
+      const now = new Date().getTime();
+      const hoursElapsed = (now - timestamp) / (1000 * 60 * 60);
+
+      if (hoursElapsed < 24) {
+        return worker as Worker;
+      }
+    }
+
+    const response = await fetch(
+      `https://2q2woep105.execute-api.eu-west-1.amazonaws.com/napptilus/oompa-loompas/${id}`
+    );
+    const worker = await response.json();
+
+    const timestamp = new Date().getTime();
+    localStorage.setItem(
+      localStorageKey,
+      JSON.stringify({ worker, timestamp })
+    );
+
+    return worker as Worker;
   }
 );
 
@@ -86,6 +120,17 @@ const workersSlice = createSlice({
       .addCase(fetchWorkers.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || "Failed to fetch workers";
+      })
+      .addCase(fetchWorkerById.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchWorkerById.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.selectedWorker = action.payload;
+      })
+      .addCase(fetchWorkerById.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || "Failed to fetch worker";
       });
   },
 });
