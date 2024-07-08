@@ -1,14 +1,16 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Worker } from "../../types/worker";
 
 interface WorkersState {
   workers: Worker[];
+  filteredWorkers: Worker[];
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
 
 const initialState: WorkersState = {
   workers: [],
+  filteredWorkers: [],
   status: "idle",
   error: null,
 };
@@ -49,7 +51,22 @@ export const fetchWorkers = createAsyncThunk(
 const workersSlice = createSlice({
   name: "workers",
   initialState,
-  reducers: {},
+  reducers: {
+    filterWorkers: (state, action: PayloadAction<string>) => {
+      const searchTerm = action.payload.toLowerCase();
+      if (searchTerm === "") {
+        state.filteredWorkers = state.workers; 
+      } else {
+        state.filteredWorkers = state.workers.filter((worker) => {
+          const fullName = `${worker.first_name} ${worker.last_name}`.toLowerCase();
+          return (
+            fullName.includes(searchTerm) ||
+            worker.profession.toLowerCase().includes(searchTerm)
+          );
+        });
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchWorkers.pending, (state) => {
@@ -64,6 +81,7 @@ const workersSlice = createSlice({
             )
         );
         state.workers = [...state.workers, ...newWorkers];
+        state.filteredWorkers = state.workers; 
       })
       .addCase(fetchWorkers.rejected, (state, action) => {
         state.status = "failed";
@@ -71,5 +89,7 @@ const workersSlice = createSlice({
       });
   },
 });
+
+export const { filterWorkers } = workersSlice.actions;
 
 export default workersSlice.reducer;

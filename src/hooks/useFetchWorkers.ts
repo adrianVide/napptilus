@@ -5,7 +5,9 @@ import { fetchWorkers } from "../store/features/workersSlice";
 
 export const useFetchWorkers = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const workers = useSelector((state: RootState) => state.workers.workers);
+  const workers = useSelector(
+    (state: RootState) => state.workers.filteredWorkers
+  );
   const workerStatus = useSelector((state: RootState) => state.workers.status);
   const [page, setPage] = useState(1);
   const lastWorkerRef = useRef<HTMLDivElement>(null);

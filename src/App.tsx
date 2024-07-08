@@ -1,9 +1,15 @@
 import "./App.css";
 import { Worker } from "./types/worker";
 import { useFetchWorkers } from "./hooks/useFetchWorkers";
+import { useEffect, useState } from "react";
+import { filterWorkers } from "./store/features/workersSlice";
+import { useDispatch } from "react-redux";
 
 function App() {
   const { workers, lastWorkerRef } = useFetchWorkers();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const dispatch = useDispatch();
 
   const WorkerComponent = ({ worker }: { worker: Worker }) => (
     <div>
@@ -18,8 +24,18 @@ function App() {
     </div>
   );
 
+  useEffect(() => {
+    dispatch(filterWorkers(searchTerm));
+  }, [searchTerm, dispatch]);
+
   return (
     <div className="App">
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Search workers..."
+      />
       {workers?.map((worker: Worker, index: number) => {
         if (index === workers.length - 1) {
           return (
