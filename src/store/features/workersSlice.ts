@@ -16,11 +16,33 @@ const initialState: WorkersState = {
 export const fetchWorkers = createAsyncThunk(
   "workers/fetchWorkers",
   async (page: number) => {
+    const localStorageKey = `workers_page_${page}`;
+    const storedItem = localStorage.getItem(localStorageKey);
+
+    if (storedItem) {
+      const { workers, timestamp }: { workers: Worker[]; timestamp: number } =
+        JSON.parse(storedItem);
+      const now = new Date().getTime();
+      const hoursElapsed = (now - timestamp) / (1000 * 60 * 60);
+
+      if (hoursElapsed < 24) {
+        return workers as Worker[];
+      }
+    }
+
     const response = await fetch(
       `https://2q2woep105.execute-api.eu-west-1.amazonaws.com/napptilus/oompa-loompas?page=${page}`
     );
     const data = await response.json();
-    return data.results as Worker[];
+    const workers = data.results as Worker[];
+
+    const timestamp = new Date().getTime();
+    localStorage.setItem(
+      localStorageKey,
+      JSON.stringify({ workers, timestamp })
+    );
+
+    return workers as Worker[];
   }
 );
 
