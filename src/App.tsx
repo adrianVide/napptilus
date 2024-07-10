@@ -1,12 +1,12 @@
 import "./App.css";
-import { Worker } from "./types/worker";
 import { useFetchWorkers } from "./hooks/useFetchWorkers";
 import { useEffect, useState } from "react";
 import { filterWorkers } from "./store/features/workersSlice";
 import { useDispatch } from "react-redux";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import WorkerDetail from "./components/WorkerDetail/WorkerDetail";
 import WorkersList from "./components/WorkersList/WorkersList";
+import NavBar from "./components/NavBar/NavBar";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,23 +20,21 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search workers..."
+      <NavBar />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <WorkersList
+              workers={workers}
+              lastWorkerRef={lastWorkerRef}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+            />
+          }
         />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <WorkersList workers={workers} lastWorkerRef={lastWorkerRef} />
-            }
-          />
-          <Route path="/:id" element={<WorkerDetail />} />
-        </Routes>
-      </div>
+        <Route path="/:id" element={<WorkerDetail />} />
+      </Routes>
     </Router>
   );
 }
