@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";
 import { fetchWorkers } from "../store/features/workersSlice";
 
-export const useFetchWorkers = () => {
+export const useFetchWorkers = (hasSearch: boolean) => {
   const dispatch = useDispatch<AppDispatch>();
   const workers = useSelector(
     (state: RootState) => state.workers.filteredWorkers
@@ -13,6 +13,7 @@ export const useFetchWorkers = () => {
   const lastWorkerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (hasSearch) return;
     const options = {
       root: null,
       rootMargin: "0px",
