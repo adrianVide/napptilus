@@ -1,0 +1,18 @@
+.header-subtitle {
+    text-align: center;
+    color: grey;
+    margin-top: 0;
+    @media screen and (min-width: 780px) {
+        font-size: 3rem;
+    }
+}
+
+.header-title {
+    font-weight: 400;
+    text-align: center;
+    color: black;
+    margin: 0;
+    @media screen and (min-width: 780px) {
+        font-size: 4rem;
+    }
+}
