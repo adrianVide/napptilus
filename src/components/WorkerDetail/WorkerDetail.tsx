@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { fetchWorkerById } from "../../store/features/workersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../store/store";
+import "./WorkerDetail.css";
 
 const WorkerDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,21 +21,28 @@ const WorkerDetail = () => {
   if (workerStatus === "loading") {
     return <div>Loading...</div>;
   }
-
+  console.log(worker);
   if (!worker) {
     return <div>Worker not found</div>;
   }
 
   return (
-    <div>
+    <div className="detail-container">
       <img
-        src="https://placehold.co/400x300"
+        src="https://placehold.co/600x400"
         alt={`${worker.first_name} ${worker.last_name}`}
       />
-      <h2>
-        {worker.first_name} {worker.last_name}
-      </h2>
-      <p>{worker.profession}</p>
+      <div className="detail-information">
+        <h2 className="detail-name">
+          {worker.first_name} {worker.last_name}
+        </h2>
+        <p className="detail-gender">{worker.gender}</p>
+        <p className="detail-profession">{worker.profession}</p>
+        <p
+          className="detail-description"
+          dangerouslySetInnerHTML={{ __html: worker.description }}
+        />
+      </div>
     </div>
   );
 };

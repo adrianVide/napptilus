@@ -1,0 +1,35 @@
+.detail-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 1rem;
+    @media screen and (min-width: 780px) {
+        flex-direction: row;
+        margin: auto;
+    }
+}
+
+.detail-information {
+    @media screen and (min-width: 780px) {
+    margin-left: 1rem;
+    }
+}
+
+.detail-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.detail-gender {
+    margin: 0;
+}
+
+.detail-profession {
+    margin: 0;
+}
+
+.detail-description {
+    margin-top: 1rem;
+    line-height: 1.5rem;
+}
