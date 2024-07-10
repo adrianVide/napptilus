@@ -1,46 +1,41 @@
 import { Worker } from "../../types/worker";
-import { Link } from "react-router-dom";
+import Header from "../Header/Header";
+import WorkerCard from "../WorkerCard/WorkerCard";
+import "./WorkersList.css";
 
-interface WorkersListProps {
+type Props = {
   workers: Worker[];
   lastWorkerRef: React.RefObject<HTMLDivElement>;
-}
+  searchTerm: string;
+  setSearchTerm: (searchTerm: string) => void;
+};
 
-const WorkerComponent = ({ worker }: { worker: Worker }) => (
-  <Link to={`/${worker.id}`}>
-    <div>
-      <img
-        src="https://placehold.co/400x300"
-        alt={`${worker.first_name} ${worker.last_name}`}
-      />
-      <h2>
-        {worker.first_name} {worker.last_name}
-      </h2>
-      <p>{worker.profession}</p>
-    </div>
-  </Link>
-);
-
-const WorkersList: React.FC<WorkersListProps> = ({
+const WorkersList = ({
   workers,
   lastWorkerRef,
-}) => {
-
+  searchTerm,
+  setSearchTerm,
+}: Props) => {
   return (
-    <div>
-      {workers.map((worker: Worker, index: number) => {
-        if (index === workers.length - 1) {
-          return (
-            <div ref={lastWorkerRef} key={worker.id} id="last">
-              LAST
-              <WorkerComponent worker={worker} />
-            </div>
-          );
-        } else {
-          return <WorkerComponent key={worker.id} worker={worker} />;
-        }
-      })}
-    </div>
+    <>
+      <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <div className="grid-container">
+        {workers.map((worker: Worker, index: number) => {
+          if (index === workers.length - 1) {
+            return (
+              <div ref={lastWorkerRef} key={worker.id} id="last">
+                <WorkerCard
+                  worker={worker}
+                  key={worker.id}
+                />
+              </div>
+            );
+          } else {
+            return <WorkerCard key={worker.id} worker={worker} />;
+          }
+        })}
+      </div>
+    </>
   );
 };
 
