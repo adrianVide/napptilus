@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { Worker } from "../../types/worker";
+import { Worker, WorkerDetail } from "../../types/worker";
 
 interface WorkersState {
   workers: Worker[];
   filteredWorkers: Worker[];
-  selectedWorker: Worker | null;
+  selectedWorker: WorkerDetail | null;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
 }
@@ -63,7 +63,7 @@ export const fetchWorkerById = createAsyncThunk(
       const hoursElapsed = (now - timestamp) / (1000 * 60 * 60);
 
       if (hoursElapsed < 24) {
-        return worker as Worker;
+        return worker as WorkerDetail;
       }
     }
 
@@ -78,7 +78,7 @@ export const fetchWorkerById = createAsyncThunk(
       JSON.stringify({ worker, timestamp })
     );
 
-    return worker as Worker;
+    return worker as WorkerDetail;
   }
 );
 
