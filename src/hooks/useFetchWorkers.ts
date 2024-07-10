@@ -29,20 +29,21 @@ export const useFetchWorkers = (hasSearch: boolean) => {
       });
     }, options);
 
-    if (lastWorkerRef.current) {
-      observer.observe(lastWorkerRef.current);
+    const ref = lastWorkerRef.current;
+
+    if (ref) {
+      observer.observe(ref);
     }
 
     return () => {
-      if (lastWorkerRef.current) {
-        observer.unobserve(lastWorkerRef.current);
+      if (ref) {
+        observer.unobserve(ref);
       }
     };
-  }, [dispatch, page, workerStatus]);
+  }, [dispatch, hasSearch, page, workerStatus]);
 
   useEffect(() => {
     if (workerStatus !== "loading") {
-      console.log("Fetching workers...");
       dispatch(fetchWorkers(page));
     }
   }, []);

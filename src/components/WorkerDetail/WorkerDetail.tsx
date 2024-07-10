@@ -21,7 +21,6 @@ const WorkerDetail = () => {
   if (workerStatus === "loading") {
     return <div className="detail-loading">Loading...</div>;
   }
-  console.log(worker);
   if (!worker) {
     return <div>Worker not found</div>;
   }
