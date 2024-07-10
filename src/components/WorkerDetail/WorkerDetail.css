@@ -5,7 +5,7 @@
     margin: 1rem;
     @media screen and (min-width: 780px) {
         flex-direction: row;
-        margin: auto;
+        margin: 50px auto;
     }
 }
 
@@ -32,4 +32,13 @@
 .detail-description {
     margin-top: 1rem;
     line-height: 1.5rem;
+}
+
+.detail-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: grey;
+    font-size: 3rem;
 }

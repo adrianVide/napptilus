@@ -19,7 +19,7 @@ const WorkerDetail = () => {
   }, [dispatch, id]);
 
   if (workerStatus === "loading") {
-    return <div>Loading...</div>;
+    return <div className="detail-loading">Loading...</div>;
   }
   console.log(worker);
   if (!worker) {
