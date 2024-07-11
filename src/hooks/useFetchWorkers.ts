@@ -9,8 +9,12 @@ export const useFetchWorkers = (hasSearch: boolean) => {
     (state: RootState) => state.workers.filteredWorkers
   );
   const workerStatus = useSelector((state: RootState) => state.workers.status);
-  const [page, setPage] = useState(1);
+  const workersLength = useSelector(
+    (state: RootState) => state.workers.workers.length
+  );
+  const [page, setPage] = useState(workersLength / 25);
   const lastWorkerRef = useRef<HTMLDivElement>(null);
+  const savedRef = useSelector((state: RootState) => state.refs.lastWorkerRefId);
 
   useEffect(() => {
     if (hasSearch) return;
@@ -19,7 +23,6 @@ export const useFetchWorkers = (hasSearch: boolean) => {
       rootMargin: "0px",
       threshold: 0.1,
     };
-
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting && workerStatus !== "loading") {
@@ -28,11 +31,15 @@ export const useFetchWorkers = (hasSearch: boolean) => {
         }
       });
     }, options);
-
     const ref = lastWorkerRef.current;
 
-    if (ref) {
+    if (ref !== null) {
       observer.observe(ref);
+    } else if (savedRef) {
+      const element = document.getElementById(savedRef);
+      if (element) {
+        observer.observe(element);
+      }
     }
 
     return () => {
@@ -40,7 +47,7 @@ export const useFetchWorkers = (hasSearch: boolean) => {
         observer.unobserve(ref);
       }
     };
-  }, [dispatch, hasSearch, page, workerStatus]);
+  }, [dispatch, hasSearch, page, workerStatus, lastWorkerRef, savedRef]);
 
   useEffect(() => {
     if (workerStatus !== "loading") {

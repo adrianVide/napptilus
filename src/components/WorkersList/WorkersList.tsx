@@ -1,7 +1,10 @@
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { Worker } from "../../types/worker";
 import Header from "../Header/Header";
 import WorkerCard from "../WorkerCard/WorkerCard";
 import "./WorkersList.css";
+import { setLastWorkerRefId } from "../../store/features/refSlice";
 
 type Props = {
   workers: Worker[];
@@ -16,6 +19,10 @@ const WorkersList = ({
   searchTerm,
   setSearchTerm,
 }: Props) => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(setLastWorkerRefId(lastWorkerRef?.current?.id));
+  }, [lastWorkerRef]);
   return (
     <>
       <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
@@ -23,11 +30,12 @@ const WorkersList = ({
         {workers.map((worker: Worker, index: number) => {
           if (index === workers.length - 1) {
             return (
-              <div ref={lastWorkerRef} key={worker.id} id="last">
-                <WorkerCard
-                  worker={worker}
-                  key={worker.id}
-                />
+              <div
+                ref={lastWorkerRef}
+                key={worker.id}
+                id={worker.id.toString()}
+              >
+                <WorkerCard worker={worker} key={worker.id} />
               </div>
             );
           } else {
